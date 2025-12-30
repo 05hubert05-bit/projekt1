@@ -9,7 +9,7 @@ typedef struct Implant {
     int risk_level;
     float energy_demand;
     char status[20];
-    struct Implant* next; // Wskaźnik na kolejny element listy
+
 } Implant;
 int main() {
 }
