@@ -35,5 +35,32 @@ int main() {
     int wybor;
        while(menu==1){
          wybor=showMenu();
-       }
+       switch(wybor){
+ case 1:{
+ 
+        }
+ case 2:{
+   
+        }
+ case 3:{
+
+break;
+}
+ case 4:{
+
+  break;
+  }
+ case 5:{
+
+      break;
+    }
+case 6:{
+
+break;
+}
+
+
+        }
+    }
+        }
 }
