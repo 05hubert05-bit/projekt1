@@ -51,10 +51,10 @@ Implant* Nowyimplant(char* id,char* nazwa,char* producent,int ryzyko,float energ
     
 }
 void Dodaj_implant(Implant** head) {
-    char id[50], nazwa[100], producent[100], status[20];
+    char id[100], nazwa[100], producent[100], status[20];
     int ryzyko; float energia;
 
-    printf("ID Wlasciciela: "); scanf("%49s", id);wyczysc_bufor();
+    printf("ID Wlasciciela: "); scanf("%99s", id);wyczysc_bufor();
     printf("Nazwa implantu: "); scanf("%99s", nazwa);wyczysc_bufor();
     printf("Producent: "); scanf("%99s", producent);wyczysc_bufor();
     printf("Ryzyko (0-10): "); while(scanf("%d", &ryzyko) != 1 || ryzyko<0 || ryzyko>10){printf("Blad: Nieprawidlowe ryzyko\n Zakres(0-10)\n"); wyczysc_bufor();}
@@ -132,7 +132,47 @@ void edytuj_implant(Implant* head) {
     
     printf("BŁĄD: Nie znaleziono implantu o podanych parametrach.\n");
 }
+void usun_implant(Implant** head)
+{
 
+       char tym_id[50];
+    char tym_nazwa[100];
+  
+    printf("\n--- USUWANIE IMPLANTU ---\n");
+    
+  
+    printf("Podaj ID właściciela: ");
+    scanf("%49s", tym_id);wyczysc_bufor();
+    printf("Podaj nazwę implantu: ");
+    scanf("%99s", tym_nazwa);wyczysc_bufor();
+    Implant* current = *head;
+    Implant* prev = NULL;
+    while (current !=NULL)
+    {   
+    if(strcmp(current->id, tym_id) == 0 && strcmp(current->nazwa, tym_nazwa) == 0) {
+       if(strcmp(current->status, "nielegalny") == 0 ) {
+          printf("BLAD: Implant  ma status NIELEGALNY. (Nie moze zostac usunienty).\n");
+            return;
+        } 
+          if (prev == NULL) {
+                
+                *head = current->next; 
+            } else {
+              
+                prev->next = current->next; 
+            }
+
+     
+            free(current);
+            printf("SUKCES: Implant usunięty.\n");
+            return;
+    }
+    prev = current;    
+        current = current->next;
+}
+  printf("BŁĄD: Nie znaleziono implantu o podanych parametrach.\n");
+
+}
 int main() {
     Implant* head = NULL;
     int menu=1; 
@@ -153,7 +193,7 @@ int main() {
 break;
 }
  case 4:{
-
+usun_implant(&head);
   break;
   }
  case 5:{
