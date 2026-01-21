@@ -21,12 +21,13 @@ int showMenu()
     printf("4)Usun jeden implant(Po ID i nazwie)\n");
     printf("5)Usun wiele(Po poziomie Ryzyka)\n");
     printf("6)Wyszukaj\n");
-    printf("7. Sortuj\n");
-    printf("8. Zapisz zmiany do pliku\n");
-    printf("0. Wyjście z systemu\n");
-         if(scanf("%d",&wybor)!=1 || wybor<0 || wybor>8)
+    printf("7)Sortuj\n");
+    printf("8)Zapisz zmiany do pliku\n");
+    printf("9)Wczytaj dane z pliku\n");
+    printf("0)Wyjscie z systemu\n");
+         if(scanf("%d",&wybor)!=1 || wybor<0 || wybor>9)
          {
-             printf("Wprowadz poprawna wartosc\n");
+             printf("Wprowadz niepoprawna wartosc\n");
           while ((getchar()) != '\n');
          }
          else{
@@ -89,16 +90,16 @@ void edytuj_implant(Implant* head) {
     printf("\n--- MODYFIKACJA DANYCH IMPLANTU ---\n");
     
   
-    printf("Podaj ID właściciela: ");
+    printf("Podaj ID wlasciciela: ");
     scanf("%99s", tym_id);wyczysc_bufor();
-    printf("Podaj nazwę implantu: ");
+    printf("Podaj nazwe implantu: ");
     scanf("%99s", tym_nazwa);wyczysc_bufor();
 
 
     Implant* current = head;
     while (current != NULL) {
      
-        if (strcmp(current->id, tym_id) == 0 && strcmp(current->nazwa, tym_nazwa) == 0) {
+        if (strstr(current->id, tym_id) != NULL && strstr(current->nazwa, tym_nazwa) != NULL) {
             
           
             printf("\nZnaleziono rekord. Obecne dane:\n");
@@ -106,22 +107,24 @@ void edytuj_implant(Implant* head) {
                    current->producent, current->ryzyko, 
                    current->energia, current->status);
 
-            printf("\n--- WPROWADŹ NOWE DANE ---\n");
+            printf("\n--- WPROWADZ NOWE DANE ---\n");
             
             
             
             printf("Nowy producent: ");
             scanf("%99s", current->producent);wyczysc_bufor();
-
+            int ryzyko;
             printf("Nowy poziom ryzyka (0-10): ");
-            scanf("%d", &current->ryzyko);wyczysc_bufor();
-
+           while(scanf("%d", &ryzyko) != 1 || ryzyko<0 || ryzyko>10){printf("Blad: Nieprawidlowe ryzyko\n Zakres(0-10)\n"); wyczysc_bufor();}
+            current->ryzyko = ryzyko;
+            int energia;
             printf("Nowe zapotrzebowanie energetyczne: ");
-            scanf("%f", &current->energia);wyczysc_bufor();
-
+            while(scanf("%f", &energia) != 1){printf("Blad:wpisz liczbe\n"); wyczysc_bufor();}
+            current->energia = energia;
             printf("Nowy status (legalny/szara/nielegalny): ");
-            scanf("%19s", current->status);wyczysc_bufor();
-
+            char status[20];
+          while(scanf("%19s", status) != 1 || (strcmp(status,"legalny")!=0 && strcmp(status,"szara")!=0 && strcmp(status,"nielegalny")!=0)){printf("Blad: Nieprawidlowy status\n Opcje(legalny/szara/nielegalny)\n"); wyczysc_bufor();}
+            strncpy(current->status, status,19);
             printf("SUKCES: Dane implantu zaktualizowane.\n");
             return; 
         }
@@ -129,7 +132,7 @@ void edytuj_implant(Implant* head) {
     }
 
     
-    printf("BŁĄD: Nie znaleziono implantu o podanych parametrach.\n");
+    printf("BLAD: Nie znaleziono implantu o podanych parametrach.\n");
 }
 void usun_implant(Implant** head)
 {
@@ -138,11 +141,12 @@ void usun_implant(Implant** head)
     char tym_nazwa[100];
   
     printf("\n--- USUWANIE IMPLANTU ---\n");
-    
-  
-    printf("Podaj ID właściciela: ");
+
+
+
+    printf("Podaj ID wlasciciela: ");
     scanf("%99s", tym_id);wyczysc_bufor();
-    printf("Podaj nazwę implantu: ");
+    printf("Podaj nazwe implantu: ");
     scanf("%99s", tym_nazwa);wyczysc_bufor();
     Implant* current = *head;
     Implant* prev = NULL;
@@ -163,7 +167,7 @@ void usun_implant(Implant** head)
 
      
             free(current);
-            printf("SUKCES: Implant usunięty.\n");
+            printf("SUKCES: Implant usuniety.\n");
             return;
     }
     prev = current;    
@@ -215,7 +219,7 @@ int usuniente=0;
 if(git==1)
   printf("SUKCES: Usunieto %d implantow o poziomie ryzyka %d.\n",usuniente,ryzyko);
 if(git==0)
-  printf("BŁĄD: Nie znaleziono implantow z podanym poziomem ryzyka lub nadajancych sie do usuniecia(Byly nielegalne).\n");
+  printf("BLAD: Nie znaleziono implantow z podanym poziomem ryzyka lub nadajancych sie do usuniecia(Byly nielegalne).\n");
 
 }
 
@@ -223,7 +227,7 @@ void wyszukaj_po_nazwie(Implant* head) {
     char tekst[100];
     int znaleziono = 0;
     printf("\n--- WYSZUKIWANIE IMPLANTU PO NAZWIE ---\n");
-    printf("Podaj nazwę implantu do wyszukania: ");
+    printf("Podaj nazwe implantu do wyszukania: ");
     scanf("%99s", tekst);wyczysc_bufor();
     Implant* current = head;
     printf("%-15s | %-20s | %-10s | %-10s | %-10s | %-10s |\n" , "WLASCICIEL", "NAZWA", "PRODUCENT", "RYZYKO", "ENERGIA", "STATUS");
@@ -236,10 +240,10 @@ void wyszukaj_po_nazwie(Implant* head) {
     }
     if(znaleziono!=0) {
     {
-        printf("Znaleziono %d implant(ów) o nazwie zawierającej '%s'.\n", znaleziono, tekst);
+        printf("Znaleziono %d implantow o nazwie zawierajacej '%s'.\n", znaleziono, tekst);
     }
     if (znaleziono==0) {
-        printf("Nie znaleziono implantów o podanej nazwie.\n");
+        printf("Nie znaleziono implantow o podanej nazwie.\n");
     }
 }
 }
@@ -260,10 +264,10 @@ void wyszukaj_po_ryzyku(Implant* head) {
     }
     if(znaleziono!=0) {
     {
-        printf("Znaleziono %d implant(ów) o ryzyku rownym '%d'.\n", znaleziono, ryzyko);
+        printf("Znaleziono %d implantow o ryzyku rownym '%d'.\n", znaleziono, ryzyko);
     }
     if (znaleziono==0) {
-        printf("Nie znaleziono implantów o podanym poziomie ryzyka.\n");
+        printf("Nie znaleziono implantow o podanym poziomie ryzyka.\n");
     }
 }
 }
@@ -290,7 +294,156 @@ void Wybor_wyszukiwania(Implant* head)
         }
     }
 }
-int main() {
+void zapis_do_pliku(Implant* head, const char* nazwa_pliku) {
+    FILE* plik = fopen(nazwa_pliku, "w");
+    if (plik == NULL) {
+        printf("BLAD: Nie mozna otworzyc pliku do zapisu.\n");
+        return;
+    }
+    Implant* current = head;
+    while (current != NULL) {
+        fprintf(plik, "%s; %s; %s; %d; %.2f; %s\n", current->id, current->nazwa, current->producent, current->ryzyko, current->energia, current->status);
+        current = current->next;
+    }   
+    fclose(plik);
+    printf("SUKCES: Dane zostaly zapisane do pliku '%s'.\n", nazwa_pliku);
+}
+void wczytaj_z_pliku(Implant** head, const char* nazwa_pliku) {
+    FILE* plik = fopen(nazwa_pliku, "r");
+    
+    if (plik == NULL) {
+        printf("BLAD: Nie mozna otworzyc pliku %s do odczytu.\n", nazwa_pliku);
+        return;
+    }
+
+    char id[50], nazwa[100], producent[100], status[20];
+    int ryzyko;
+    float energia;
+    int wczytane = 0;
+
+    while (fscanf(plik, " %49[^;];%99[^;];%99[^;];%d;%f;%19[^\n]", 
+                  id, nazwa, producent, &ryzyko, &energia, status) == 6) {
+        
+        
+        Implant* nowy = Nowyimplant(id, nazwa, producent, ryzyko, energia, status);
+        if (nowy != NULL) {
+            nowy->next = *head;
+            *head = nowy;
+            wczytane++;
+        }
+    }
+
+    fclose(plik);
+    printf("SUKCES: Wczytano %d rekordow z pliku %s.\n", wczytane, nazwa_pliku);
+}
+void zwolnij_liste(Implant* head) {
+    Implant* current = head;
+    while (current != NULL) {
+        Implant* next = current->next;
+        free(current); 
+        current = next;
+    }
+}
+
+Implant* wstaw_posortowane_ryzyko(Implant* sorted, Implant* nowy_wezel) {
+    
+    if (sorted == NULL || nowy_wezel->ryzyko <= sorted->ryzyko) {
+        nowy_wezel->next = sorted;
+        return nowy_wezel;
+    }
+
+    Implant* p = sorted;
+
+    while (p->next != NULL && p->next->ryzyko < nowy_wezel->ryzyko) {
+        p = p->next;
+    }
+
+
+    nowy_wezel->next = p->next;
+    p->next = nowy_wezel;
+
+    return sorted;
+}
+void sortuj_ryzyko(Implant** head) {
+    Implant* sorted = NULL;
+    Implant* current = *head;
+
+    while (current != NULL) {
+        Implant* next = current->next; 
+        
+        current->next = NULL;
+        sorted = wstaw_posortowane_ryzyko(sorted, current);
+        
+        current = next; 
+    }
+
+    *head = sorted; 
+    printf("Lista zostala posortowana wedlug poziomu ryzyka.\n");
+}
+Implant* wstaw_posortowane_nazwe(Implant* sorted, Implant* nowy_wezel) {
+    
+    if (sorted == NULL || strcmp(nowy_wezel->nazwa, sorted->nazwa) <= 0) {
+        nowy_wezel->next = sorted;
+        return nowy_wezel;
+    }
+
+    Implant* p = sorted;
+
+    while (p->next != NULL && strcmp(p->next->nazwa, nowy_wezel->nazwa) < 0) {
+        p = p->next;
+    }
+
+
+    nowy_wezel->next = p->next;
+    p->next = nowy_wezel;
+
+    return sorted;
+}
+void sortuj_nazwe(Implant** head) {
+    Implant* sorted = NULL;
+    Implant* current = *head;
+
+    while (current != NULL) {
+        Implant* next = current->next; 
+        
+        current->next = NULL;
+        sorted = wstaw_posortowane_nazwe(sorted, current);
+        
+        current = next; 
+    }
+
+    *head = sorted; 
+    printf("Lista zostala posortowana alfabetycznie wedlug nazwy.\n");
+}
+void Sortowanie(Implant** head)
+{
+    
+    int opcja;
+    printf("\n--- SORTOWANIE IMPLANTU ---\n");
+    printf("1) Sortuj po nazwie\n");
+    printf("2) Sortuj po ryzyku\n");
+    scanf("%d",&opcja);wyczysc_bufor();
+    switch(opcja){
+        case 1:{
+            sortuj_nazwe(head);      
+            break;
+        }
+        case 2:{
+           sortuj_ryzyko(head);      
+            break;
+        }
+        default:{
+            printf("Blad: Nieprawidlowa opcja\n");
+            break;
+        }
+    }
+}
+int main(int argc, char* argv[]) {
+  
+    if (argc < 2) {
+        printf("Uzycie: %s <nazwa_pliku_bazy>\n", argv[0]);
+    }
+char* sciezka_pliku = argv[1];
     Implant* head = NULL;
     int menu=1; 
     int wybor;  
@@ -321,10 +474,25 @@ case 6:{
 Wybor_wyszukiwania(head);
       break;
     }
-break;
+case 7:{
+Sortowanie(&head);
+      break;
+    }
+case 8:{
+zapis_do_pliku(head, sciezka_pliku);
+      break;
+    }
+case 9:{
+wczytaj_z_pliku(&head, sciezka_pliku);
+      break;
+    }
+    case 0:{
+    menu=0;
+    zwolnij_liste(head);
+    printf("Wyjscie z systemu\n");
 }
 
 
         }
     }
-        
+} 
